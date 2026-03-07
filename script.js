@@ -32,14 +32,23 @@ function init() {
     compassRose: document.getElementById("compass-rose"),
     deviceHeading: document.getElementById("device-heading"),
     compassStatus: document.getElementById("compass-status"),
-    // Ramadan elements
     ramadanSection: document.getElementById("ramadan-section"),
     ramadanCountdown: document.getElementById("ramadan-countdown"),
+    ramadanDay: document.getElementById("ramadan-day"),
     sehriTime: document.getElementById("sehri-time"),
     sehriCountdown: document.getElementById("sehri-countdown"),
     iftarTime: document.getElementById("iftar-time"),
     iftarCountdown: document.getElementById("iftar-countdown"),
-    ramadanDay: document.getElementById("ramadan-day")
+    togglePrayerReminders: document.getElementById("toggle-prayer-reminders"),
+    toggleZakatReminder: document.getElementById("toggle-zakat-reminder"),
+    toggleRamadanNotifications: document.getElementById("toggle-ramadan-notifications"),
+    toggleFridayReminder: document.getElementById("toggle-friday-reminder"),
+    toggleIslamicEvents: document.getElementById("toggle-islamic-events"),
+    toggleMasterSound: document.getElementById("toggle-master-sound"),
+    toggleAdhanSound: document.getElementById("toggle-adhan-sound"),
+    toggleNotificationSound: document.getElementById("toggle-notification-sound"),
+    volumeSlider: document.getElementById("volume-slider"),
+    volumeDisplay: document.getElementById("volume-display")
   };
 
   let state = loadPrefs();
@@ -498,15 +507,61 @@ async function fetchMonthly(city, el) {
 function checkAdhan(el) {
   if (!window.todayTimings) return;
 
+  const state = loadPrefs();
   let now = new Date();
   let current = now.toTimeString().slice(0, 5);
+  
   ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].forEach(p => {
     if (window.todayTimings[p] === current) {
-      el.audio.play();
-      if (Notification.permission === "granted")
-        new Notification("Adhan", { body: p + " time has started" });
+      // Check if Adhan notifications are enabled
+      if (state.adhanNotifications !== false) {
+        // Play Adhan sound if enabled
+        if (state.masterSound !== false && state.adhanSound !== false) {
+          el.audio.play();
+        }
+        
+        // Show notification if permission granted
+        if (Notification.permission === "granted") {
+          new Notification(" Adhan Time", { 
+            body: p + " prayer has started",
+            icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23228B22'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>"
+          });
+        }
+        
+        // Check for prayer reminders
+        if (state.prayerReminders !== false) {
+          setTimeout(() => {
+            if (Notification.permission === "granted") {
+              new Notification(" Prayer Reminder", { 
+                body: "Don't forget to pray " + p + " on time",
+                icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234169E1'><path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/></svg>"
+              });
+            }
+          }, 5 * 60 * 1000); // 5 minutes later
+        }
+      }
     }
   });
+  
+  // Check for Friday Jumu'ah reminder
+  if (now.getDay() === 5 && state.fridayReminder !== false) { // Friday is day 5
+    const dhuhrTime = window.todayTimings.Dhuhr;
+    if (dhuhrTime) {
+      const [hours, minutes] = dhuhrTime.split(':');
+      const dhuhrDate = new Date();
+      dhuhrDate.setHours(parseInt(hours), parseInt(minutes) - 30, 0, 0); // 30 minutes before Dhuhr
+      
+      const timeDiff = dhuhrDate - now;
+      if (timeDiff > 0 && timeDiff <= 60000) { // Within 1 minute of reminder time
+        if (Notification.permission === "granted") {
+          new Notification(" Friday Jumu'ah", { 
+            body: "Jumu'ah prayer is in 30 minutes. Prepare for congregation.",
+            icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FFD700'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z'/></svg>"
+          });
+        }
+      }
+    }
+  }
 }
 
 /* ==================== THEME + STORAGE ==================== */
@@ -516,6 +571,26 @@ function applyPrefs(el, state) {
   el.calculationMethod.value = state.method || 2;
   el.madhab.value = state.madhab || 0;
   document.body.classList.toggle("dark", state.dark);
+  
+  // Apply notification settings
+  el.toggleAdhan.checked = state.adhanNotifications !== false;
+  el.togglePrayerReminders.checked = state.prayerReminders !== false;
+  el.toggleZakatReminder.checked = state.zakatReminder !== false;
+  el.toggleRamadanNotifications.checked = state.ramadanNotifications !== false;
+  el.toggleFridayReminder.checked = state.fridayReminder !== false;
+  el.toggleIslamicEvents.checked = state.islamicEvents !== false;
+  
+  // Apply sound settings
+  el.toggleMasterSound.checked = state.masterSound !== false;
+  el.toggleAdhanSound.checked = state.adhanSound !== false;
+  el.toggleNotificationSound.checked = state.notificationSound !== false;
+  el.volumeSlider.value = state.volume || 70;
+  el.volumeDisplay.textContent = (state.volume || 70) + '%';
+  
+  // Set audio volume
+  if (el.audio) {
+    el.audio.volume = (state.volume || 70) / 100;
+  }
 }
 
 function attachEvents(el, state) {
@@ -546,6 +621,67 @@ function attachEvents(el, state) {
     state.city = e.target.value || null;
     savePrefs(state);
     location.reload();
+  });
+
+  // Notification toggle events
+  el.toggleAdhan.addEventListener("change", e => {
+    state.adhanNotifications = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.togglePrayerReminders.addEventListener("change", e => {
+    state.prayerReminders = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.toggleZakatReminder.addEventListener("change", e => {
+    state.zakatReminder = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.toggleRamadanNotifications.addEventListener("change", e => {
+    state.ramadanNotifications = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.toggleFridayReminder.addEventListener("change", e => {
+    state.fridayReminder = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.toggleIslamicEvents.addEventListener("change", e => {
+    state.islamicEvents = e.target.checked;
+    savePrefs(state);
+  });
+
+  // Sound toggle events
+  el.toggleMasterSound.addEventListener("change", e => {
+    state.masterSound = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.toggleAdhanSound.addEventListener("change", e => {
+    state.adhanSound = e.target.checked;
+    savePrefs(state);
+  });
+
+  el.toggleNotificationSound.addEventListener("change", e => {
+    state.notificationSound = e.target.checked;
+    savePrefs(state);
+  });
+
+  // Volume slider event
+  el.volumeSlider.addEventListener("input", e => {
+    const volume = parseInt(e.target.value);
+    state.volume = volume;
+    el.volumeDisplay.textContent = volume + '%';
+    
+    // Update audio volume in real-time
+    if (el.audio) {
+      el.audio.volume = volume / 100;
+    }
+    
+    savePrefs(state);
   });
 }
 
@@ -605,6 +741,83 @@ function loadIslamicContent(el) {
   }
 }
 
+/* ==================== MENU & MODAL FUNCTIONS ==================== */
+function toggleMenu() {
+  const menu = document.getElementById('side-menu');
+  const overlay = document.getElementById('menu-overlay');
+  const hamburger = document.getElementById('hamburger');
+  
+  if (menu.style.right === '-350px' || menu.style.right === '') {
+    // Open menu
+    menu.style.right = '0px';
+    overlay.style.display = 'block';
+    setTimeout(() => {
+      overlay.style.opacity = '1';
+    }, 10);
+    
+    // Transform hamburger to X
+    hamburger.children[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+    hamburger.children[1].style.opacity = '0';
+    hamburger.children[2].style.transform = 'rotate(-45deg) translate(7px, -6px)';
+  } else {
+    // Close menu
+    menu.style.right = '-350px';
+    overlay.style.opacity = '0';
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 300);
+    
+    // Reset hamburger
+    hamburger.children[0].style.transform = 'none';
+    hamburger.children[1].style.opacity = '1';
+    hamburger.children[2].style.transform = 'none';
+  }
+}
+
+function showSection(section) {
+  // Close menu first
+  toggleMenu();
+  
+  // Show the appropriate modal
+  if (section === 'settings') {
+    document.getElementById('settings-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  } else if (section === 'about') {
+    document.getElementById('about-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  } else if (section === 'contact') {
+    document.getElementById('contact-modal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+function closeModal(modal) {
+  if (modal === 'settings') {
+    document.getElementById('settings-modal').style.display = 'none';
+  } else if (modal === 'about') {
+    document.getElementById('about-modal').style.display = 'none';
+  } else if (modal === 'contact') {
+    document.getElementById('contact-modal').style.display = 'none';
+  }
+  document.body.style.overflow = 'auto';
+}
+
+function showSettingsTab(tabName) {
+  // Hide all tabs
+  const tabs = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => tab.classList.remove('active'));
+  
+  // Remove active class from all buttons
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  
+  // Show selected tab
+  document.getElementById(tabName + '-tab').classList.add('active');
+  
+  // Add active class to clicked button
+  document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+}
+
 /* ==================== SERVICE WORKER ==================== */
 function initServiceWorker() {
   if ("serviceWorker" in navigator) {
@@ -652,6 +865,57 @@ function initRamadanFeatures(el) {
 
   // Start updating timers every second
   setInterval(() => updateRamadanTimers(el), 1000);
+  
+  // Check for Ramadan notifications
+  setInterval(() => checkRamadanNotifications(el), 60000); // Check every minute
+}
+
+function checkRamadanNotifications(el) {
+  const state = loadPrefs();
+  if (state.ramadanNotifications === false) return;
+  
+  if (!window.todayTimings) return;
+
+  const now = new Date();
+  const currentTime = now.toTimeString().slice(0, 5);
+
+  // Get Sehri (Fajr) and Iftar (Maghrib) times
+  const sehriTime = window.todayTimings.Fajr;
+  const iftarTime = window.todayTimings.Maghrib;
+
+  // Check for Sehri notification (30 minutes before)
+  if (sehriTime) {
+    const [sehriHours, sehriMinutes] = sehriTime.split(':');
+    const sehriNotificationTime = new Date();
+    sehriNotificationTime.setHours(parseInt(sehriHours), parseInt(sehriMinutes) - 30, 0, 0);
+    
+    const timeDiff = sehriNotificationTime - now;
+    if (timeDiff > 0 && timeDiff <= 60000) { // Within 1 minute of notification time
+      if (Notification.permission === "granted" && state.notificationSound !== false) {
+        new Notification("🌙 Ramadan Sehri", { 
+          body: "Sehri time is in 30 minutes. Prepare for Suhoor.",
+          icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%234B5563'><path d='M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z'/></svg>"
+        });
+      }
+    }
+  }
+
+  // Check for Iftar notification (15 minutes before)
+  if (iftarTime) {
+    const [iftarHours, iftarMinutes] = iftarTime.split(':');
+    const iftarNotificationTime = new Date();
+    iftarNotificationTime.setHours(parseInt(iftarHours), parseInt(iftarMinutes) - 15, 0, 0);
+    
+    const timeDiff = iftarNotificationTime - now;
+    if (timeDiff > 0 && timeDiff <= 60000) { // Within 1 minute of notification time
+      if (Notification.permission === "granted" && state.notificationSound !== false) {
+        new Notification("🍽️ Ramadan Iftar", { 
+          body: "Iftar time is in 15 minutes. Prepare to break your fast.",
+          icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B'><path d='M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z'/></svg>"
+        });
+      }
+    }
+  }
 }
 
 function updateRamadanInfo(el, dayNumber, totalDays, currentDate, ramadanEnd) {
@@ -878,15 +1142,22 @@ function calculateZakat() {
   }
   
   // Update note with local currency
-  if (zakatDueUSD > 0) {
-    noteDiv.textContent = `Zakat is due as your wealth exceeds the Nisab threshold (${currencySymbol}${nisabThresholdLocal.toFixed(2)} ${selectedCurrency})`;
-  } else {
-    noteDiv.textContent = `No Zakat due as your wealth is below the Nisab threshold (${currencySymbol}${nisabThresholdLocal.toFixed(2)} ${selectedCurrency})`;
-  }
+  noteDiv.textContent = zakatDueUSD > 0 
+    ? `Zakat is due as your wealth exceeds the Nisab threshold (${currencySymbol}${nisabThresholdLocal.toFixed(2)} ${selectedCurrency})`
+    : `No Zakat due as your wealth is below the Nisab threshold (${currencySymbol}${nisabThresholdLocal.toFixed(2)} ${selectedCurrency})`;
   
   // Style the Zakat amount based on whether it's due
   if (zakatDueUSD > 0) {
     zakatDueDiv.style.color = 'var(--accent-color)';
+    
+    // Check for Zakat reminder notification
+    const state = loadPrefs();
+    if (state.zakatReminder !== false && Notification.permission === "granted") {
+      new Notification("💰 Zakat Calculation Complete", { 
+        body: `Zakat due: ${currencySymbol}${zakatDueLocal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}. Remember to pay your Zakat on time.`,
+        icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310B981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1.81.45 1.61 1.67 1.61 1.16 0 1.6-.64 1.6-1.46 0-.84-.68-1.22-1.88-1.64-1.68-.55-3.48-1.22-3.48-3.61 0-1.69 1.26-2.83 2.97-3.21V5h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.63-1.63-1.63-1.01 0-1.46.54-1.46 1.34 0 .89.79 1.21 1.97 1.58 1.69.52 3.42 1.15 3.42 3.67 0 1.87-1.36 3.03-3.19 3.39z'/></svg>"
+      });
+    }
   } else {
     zakatDueDiv.style.color = 'var(--text-secondary)';
   }
@@ -970,4 +1241,93 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize price displays
   updateMarketPrices();
+});
+
+/* ==================== ISLAMIC EVENTS ==================== */
+function initIslamicEvents() {
+  // Check for Islamic events notifications daily
+  setInterval(() => checkIslamicEvents(), 3600000); // Check every hour
+  checkIslamicEvents(); // Check immediately on load
+}
+
+function checkIslamicEvents() {
+  const state = loadPrefs();
+  if (state.islamicEvents === false) return;
+  
+  if (Notification.permission !== "granted") return;
+  
+  const today = new Date();
+  const hijriDate = new Intl.DateTimeFormat('en-TZ-u-ca-islamic', {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric'
+  }).format(today);
+  
+  // Extract Hijri day and month
+  const hijriParts = hijriDate.split('/');
+  const hijriDay = parseInt(hijriParts[1]);
+  const hijriMonth = parseInt(hijriParts[0]);
+  
+  // Important Islamic events
+  const events = {
+    1: { 1: "Islamic New Year (Muharram 1)" },
+    1: { 10: "Day of Ashura (Muharram 10)" },
+    3: { 12: "Mawlid al-Nabi (Rabi' al-Awwal 12)" },
+    7: { 27: "Lailat al-Mi'raj (Rajab 27)" },
+    8: { 15: "Lailat al-Bara'ah (Sha'ban 15)" },
+    9: { 1: "First day of Ramadan", 17: "Battle of Badr", 21: "Lailat al-Qadr begins", 27: "Lailat al-Qadr" },
+    10: { 1: "Eid al-Fitr", 8: "Day of Arafah", 9: "Eid al-Adha", 10: "Eid al-Adha" },
+    12: { 18: "Day of Arafah (Hajj season)" }
+  };
+  
+  // Check if today is an event day
+  if (events[hijriMonth] && events[hijriMonth][hijriDay]) {
+    const eventName = events[hijriMonth][hijriDay];
+    const lastNotification = localStorage.getItem(`islamic-event-${hijriMonth}-${hijriDay}`);
+    const todayString = today.toDateString();
+    
+    // Only show notification once per day
+    if (lastNotification !== todayString) {
+      new Notification("🌙 Islamic Event", {
+        body: `Today is ${eventName}. May Allah accept your deeds.`,
+        icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237C3AED'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z'/></svg>"
+      });
+      
+      localStorage.setItem(`islamic-event-${hijriMonth}-${hijriDay}`, todayString);
+    }
+  }
+  
+  // Special notifications for upcoming events
+  checkUpcomingEvents(today, hijriDay, hijriMonth);
+}
+
+function checkUpcomingEvents(today, currentDay, currentMonth) {
+  const upcomingEvents = [
+    { month: 9, day: 1, name: "Ramadan", daysBefore: 7, message: "Ramadan begins in 7 days. Prepare spiritually!" },
+    { month: 10, day: 1, name: "Eid al-Fitr", daysBefore: 3, message: "Eid al-Fitr is in 3 days. Prepare for celebration!" },
+    { month: 10, day: 9, name: "Eid al-Adha", daysBefore: 3, message: "Eid al-Adha is in 3 days. Prepare for sacrifice!" },
+    { month: 9, day: 27, name: "Lailat al-Qadr", daysBefore: 1, message: "Lailat al-Qadr is tomorrow. Seek forgiveness!" }
+  ];
+  
+  upcomingEvents.forEach(event => {
+    if (currentMonth === event.month && currentDay === event.day - event.daysBefore) {
+      const notificationKey = `upcoming-${event.month}-${event.day}`;
+      const lastNotification = localStorage.getItem(notificationKey);
+      const todayString = today.toDateString();
+      
+      if (lastNotification !== todayString) {
+        new Notification("📅 Upcoming Islamic Event", {
+          body: event.message,
+          icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23F59E0B'><path d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z'/></svg>"
+        });
+        
+        localStorage.setItem(notificationKey, todayString);
+      }
+    }
+  });
+}
+
+// Initialize Islamic events when the app loads
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(initIslamicEvents, 2000); // Delay to ensure everything is loaded
 });
