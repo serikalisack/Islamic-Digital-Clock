@@ -4,6 +4,260 @@ const STORAGE_KEY = "islamicAppPrefs";
 const KAABA_LAT = 21.4225;
 const KAABA_LON = 39.8262;
 
+// Language Manager
+class LanguageManager {
+  constructor() {
+    this.currentLanguage = localStorage.getItem('language') || 'en';
+    this.translations = {};
+    this.loadTranslations();
+  }
+
+  async loadTranslations() {
+    try {
+      // For local development, handle both file:// and http:// protocols
+      let response;
+      if (window.location.protocol === 'file:') {
+        // For file:// protocol, create a simple fallback
+        this.translations = this.getFallbackTranslations();
+      } else {
+        response = await fetch(`translations/${this.currentLanguage}.json`);
+        this.translations = await response.json();
+      }
+      this.applyTranslations();
+      this.setDirection();
+    } catch (error) {
+      console.error('Failed to load translations:', error);
+      // Fallback to English if translation fails
+      if (this.currentLanguage !== 'en') {
+        this.currentLanguage = 'en';
+        this.loadTranslations();
+      }
+    }
+  }
+
+  getFallbackTranslations() {
+    // Fallback translations embedded in JavaScript for file:// protocol
+    const translations = {
+      'en': {
+        "app": { "title": "Islamic Smart Clock" },
+        "header": { "title": "Islamic Smart Clock" },
+        "menu": { "menu": "Menu", "settings": "Settings", "about": "About", "contact": "Contact" },
+        "sections": {
+          "islamic_inspiration": "Islamic Inspiration",
+          "ramadan_2025": "Ramadan 2025", 
+          "zakat_calculator": "Zakat Calculator",
+          "prayer_times": "Prayer Times",
+          "qibla_direction": "Qibla Direction",
+          "monthly_timetable": "Monthly Timetable"
+        },
+        "settings": {
+          "display_settings": "Display Settings",
+          "prayer_settings": "Prayer Settings",
+          "notification_settings": "Notification Settings",
+          "sound_settings": "Sound Settings",
+          "location_settings": "Location Settings"
+        }
+      },
+      'ar': {
+        "app": { "title": "الساعة الإسلامية الذكية" },
+        "header": { "title": "الساعة الإسلامية الذكية" },
+        "menu": { "menu": "القائمة", "settings": "الإعدادات", "about": "حول", "contact": "اتصل" },
+        "sections": {
+          "islamic_inspiration": "الإلهام الإسلامي",
+          "ramadan_2025": "رمضان 2025",
+          "zakat_calculator": "حاسبة الزكاة", 
+          "prayer_times": "أوقات الصلاة",
+          "qibla_direction": "اتجاه القبلة",
+          "monthly_timetable": "الجدول الشهري"
+        },
+        "settings": {
+          "display_settings": "إعدادات العرض",
+          "prayer_settings": "إعدادات الصلاة",
+          "notification_settings": "إعدادات الإشعارات",
+          "sound_settings": "إعدادات الصوت",
+          "location_settings": "إعدادات الموقع"
+        }
+      },
+      'sw': {
+        "app": { "title": "Saa ya Kiislamu ya Akili" },
+        "header": { "title": "Saa ya Kiislamu ya Akili" },
+        "menu": { "menu": "Menyu", "settings": "Mipangilio", "about": "Kuhusu", "contact": "Wasiliana" },
+        "sections": {
+          "islamic_inspiration": "Mashindikano ya Kiislamu",
+          "ramadan_2025": "Ramadhani 2025",
+          "zakat_calculator": "Kikokotoo cha Zakat",
+          "prayer_times": "Nyakati za Swala", 
+          "qibla_direction": "Mwelekeo wa Qibla",
+          "monthly_timetable": "Ratiba ya Kila Mwezi"
+        },
+        "settings": {
+          "display_settings": "Mipangilio ya Onyesho",
+          "prayer_settings": "Mipangilio ya Swala",
+          "notification_settings": "Mipangilio ya Arifa",
+          "sound_settings": "Mipangilio ya Sauti",
+          "location_settings": "Mipangilio ya Mahali"
+        }
+      }
+    };
+    
+    return translations[this.currentLanguage] || translations['en'];
+  }
+
+  async changeLanguage(lang) {
+    this.currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    await this.loadTranslations();
+  }
+
+  setDirection() {
+    const isRTL = this.currentLanguage === 'ar';
+    document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', this.currentLanguage);
+  }
+
+  t(key) {
+    const keys = key.split('.');
+    let value = this.translations;
+    
+    for (const k of keys) {
+      value = value?.[k];
+    }
+    
+    return value || key;
+  }
+
+  applyTranslations() {
+    console.log('Applying translations for:', this.currentLanguage);
+    
+    // Update page title
+    document.title = this.t('app.title');
+    
+    // Header title
+    const headerTitle = document.querySelector('h1 span');
+    if (headerTitle) {
+      headerTitle.textContent = this.t('header.title');
+    }
+    
+    // Menu title
+    const menuTitle = document.querySelector('#side-menu h2');
+    if (menuTitle) {
+      menuTitle.textContent = this.t('menu.menu');
+    }
+    
+    // Section titles
+    const sectionTitles = document.querySelectorAll('main section h3');
+    const sectionKeys = ['islamic_inspiration', 'ramadan_2025', 'zakat_calculator', 'prayer_times', 'qibla_direction', 'monthly_timetable'];
+    
+    sectionTitles.forEach((title, index) => {
+      if (sectionKeys[index]) {
+        title.textContent = this.t('sections.' + sectionKeys[index]);
+      }
+    });
+    
+    // Settings modal
+    const settingsTitle = document.querySelector('#settings-modal h2');
+    if (settingsTitle) {
+      settingsTitle.textContent = this.t('menu.settings');
+    }
+    
+    // Settings tabs
+    const settingsTabs = document.querySelectorAll('.tab-btn');
+    const tabTranslations = ['settings.display_settings', 'settings.prayer_settings', 'settings.notification_settings', 'settings.sound_settings', 'settings.location_settings'];
+    
+    settingsTabs.forEach((tab, index) => {
+      if (tabTranslations[index]) {
+        tab.textContent = this.t(tabTranslations[index]);
+      }
+    });
+    
+    // Settings content
+    const displaySettingsTitle = document.querySelector('#display-tab h3');
+    if (displaySettingsTitle) {
+      displaySettingsTitle.textContent = this.t('settings.display_settings');
+    }
+    
+    // About modal
+    const aboutTitle = document.querySelector('#about-modal h2');
+    if (aboutTitle) {
+      aboutTitle.textContent = this.t('about.about');
+    }
+    
+    // Contact modal
+    const contactTitle = document.querySelector('#contact-modal h2');
+    if (contactTitle) {
+      contactTitle.textContent = this.t('contact.contact');
+    }
+    
+    console.log('Translations applied successfully');
+  }
+
+  updateText(elementId, translationKey) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.textContent = this.t(translationKey);
+    }
+  }
+
+  updatePrayerNames() {
+    const prayerNames = {
+      'fajr': this.t('prayers.fajr'),
+      'sunrise': this.t('prayers.sunrise'),
+      'dhuhr': this.t('prayers.dhuhr'),
+      'asr': this.t('prayers.asr'),
+      'maghrib': this.t('prayers.maghrib'),
+      'isha': this.t('prayers.isha')
+    };
+    
+    // Update prayer time displays
+    Object.keys(prayerNames).forEach(prayer => {
+      const elements = document.querySelectorAll(`[data-prayer="${prayer}"]`);
+      elements.forEach(el => {
+        el.textContent = prayerNames[prayer];
+      });
+    });
+  }
+
+  updateZakatLabels() {
+    const labels = {
+      'gold-value': this.t('zakat.gold_grams'),
+      'silver-value': this.t('zakat.silver_grams'),
+      'platinum-value': this.t('zakat.platinum_grams'),
+      'palladium-value': this.t('zakat.palladium_grams'),
+      'diamond-value': this.t('zakat.diamond_carats'),
+      'other-minerals': this.t('zakat.other_minerals'),
+      'cash-value': this.t('zakat.cash_savings'),
+      'investments-value': this.t('zakat.investments'),
+      'calculate-zakat': this.t('zakat.calculate_zakat')
+    };
+    
+    Object.keys(labels).forEach(id => {
+      const label = document.querySelector(`label[for="${id}"]`);
+      if (label) {
+        label.textContent = labels[id];
+      }
+    });
+  }
+
+  updateAboutContent() {
+    const aboutTitle = document.querySelector('#about-modal h3');
+    if (aboutTitle) aboutTitle.textContent = this.t('about.about');
+    
+    const aboutDesc = document.querySelector('#about-modal p:nth-of-type(2)');
+    if (aboutDesc) aboutDesc.textContent = this.t('about.description');
+  }
+
+  updateContactContent() {
+    const contactTitle = document.querySelector('#contact-modal h3');
+    if (contactTitle) contactTitle.textContent = this.t('contact.contact');
+    
+    const contactDesc = document.querySelector('#contact-modal p:nth-of-type(2)');
+    if (contactDesc) contactDesc.textContent = this.t('contact.we_value_feedback');
+  }
+}
+
+// Initialize language manager
+const languageManager = new LanguageManager();
+
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
@@ -622,6 +876,18 @@ function attachEvents(el, state) {
     savePrefs(state);
     location.reload();
   });
+
+  // Language selector event listener
+  const languageSelect = document.getElementById('language-select');
+  if (languageSelect) {
+    languageSelect.addEventListener('change', async e => {
+      await languageManager.changeLanguage(e.target.value);
+      location.reload();
+    });
+    
+    // Set current language in selector
+    languageSelect.value = languageManager.currentLanguage;
+  }
 
   // Notification toggle events
   el.toggleAdhan.addEventListener("change", e => {

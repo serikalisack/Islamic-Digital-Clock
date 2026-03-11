@@ -1,0 +1,140 @@
+{
+  "app": {
+    "title": "الساعة الإسلامية الذكية",
+    "loading": "جاري التحميل..."
+  },
+  "header": {
+    "title": "الساعة الإسلامية الذكية"
+  },
+  "menu": {
+    "menu": "القائمة",
+    "settings": "الإعدادات",
+    "about": "حول",
+    "contact": "اتصل",
+    "close": "✕"
+  },
+  "sections": {
+    "islamic_inspiration": "الإلهام الإسلامي",
+    "ramadan_2025": "رمضان 2025",
+    "zakat_calculator": "حاسبة الزكاة",
+    "prayer_times": "أوقات الصلاة",
+    "qibla_direction": "اتجاه القبلة",
+    "monthly_timetable": "الجدول الشهري"
+  },
+  "prayers": {
+    "fajr": "الفجر",
+    "sunrise": "الشروق",
+    "dhuhr": "الظهر",
+    "asr": "العصر",
+    "maghrib": "المغرب",
+    "isha": "العشاء",
+    "jummah": "الجمعة",
+    "next_prayer": "الصلاة التالية",
+    "current_prayer": "الصلاة الحالية"
+  },
+  "ramadan": {
+    "sehri_ends": "نهاية السحور",
+    "iftar_time": "وقت الإفطار",
+    "ramadan_day": "يوم رمضان"
+  },
+  "zakat": {
+    "gold_grams": "الذهب (جرام)",
+    "silver_grams": "الفضة (جرام)",
+    "platinum_grams": "البلاتين (جرام)",
+    "palladium_grams": "البلاديوم (جرام)",
+    "diamond_carats": "الألماس (قيراط)",
+    "other_minerals": "معادن أخرى ($)",
+    "cash_savings": "المدخرات النقدية ($)",
+    "investments": "الاستثمارات ($)",
+    "market_prices": "أسعار السوق (دولار أمريكي)",
+    "gold_per_gram": "الذهب بالجرام",
+    "silver_per_gram": "الفضة بالجرام",
+    "platinum_per_gram": "البلاتين بالجرام",
+    "palladium_per_gram": "البلاديوم بالجرام",
+    "diamond_per_carat": "الألماس بالقيراط",
+    "update_prices": "تحديث الأسعار",
+    "display_currency": "عرض العملة",
+    "exchange_rate": "سعر الصرف",
+    "calculate_zakat": "حساب الزكاة",
+    "total_wealth": "إجمالي الثروة",
+    "zakat_due": "الزكاة المستحقة (2.5%)",
+    "asset_breakdown": "تفصيل الأصول",
+    "currency_conversion": "تحويل العملة"
+  },
+  "qibla": {
+    "qibla": "القبلة",
+    "compass_status": "حالة البوصلة",
+    "device_heading": "اتجاه الجهاز",
+    "qibla_angle": "زاوية القبلة"
+  },
+  "settings": {
+    "display_settings": "إعدادات العرض",
+    "prayer_settings": "إعدادات الصلاة",
+    "notification_settings": "إعدادات الإشعارات",
+    "sound_settings": "إعدادات الصوت",
+    "location_settings": "إعدادات الموقع",
+    "24_hour_format": "تنسيق 24 ساعة",
+    "gregorian_calendar": "التقويم الميلادي",
+    "hijri_calendar": "التقويم الهجري",
+    "dark_mode": "الوضع الليلي",
+    "calculation_method": "طريقة الحساب",
+    "jurisprudence_madhab": "الفقه (المذهب)",
+    "adhan_notifications": "إشعارات الأذان",
+    "prayer_reminders": "تذكيرات الصلاة",
+    "zakat_reminder": "تذكير الزكاة",
+    "ramadan_notifications": "إشعارات رمضان",
+    "friday_reminder": "تذكير الجمعة",
+    "islamic_events": "الأحداث الإسلامية",
+    "master_sound": "الصوت الرئيسي",
+    "adhan_sound": "صوت الأذان",
+    "notification_sounds": "أصوات الإشعارات",
+    "volume": "مستوى الصوت",
+    "city": "المدينة",
+    "select_city": "اختر المدينة"
+  },
+  "about": {
+    "about": "حول",
+    "version": "الإصدار",
+    "description": "تطبيق إسلامي شامل يضم أوقات الصلاة، بوصلة القبلة، التقويم الهجري، والإلهام الإسلامي اليومي.",
+    "important_notice": "تنبيه مهم",
+    "notice_text": "الصفحة لا تزال قيد الصيانة والتطوير\n\nهذا التطبيق حالياً لأغراض تعليمية فقط وليس 'فتوى' يمكن الاعتماد عليها في الأمور الدينية. يجب على المستخدمين توقع إصدارات وتغييرات مفاجئة، لذا يجب عليهم التعود على الضغط على زر التحديث في قسم القائمة بشكل متكرر للحصول على آخر التحديثات والتحسينات.",
+    "key_features": "الميزات الرئيسية",
+    "version_history": "سجل الإصدارات",
+    "developer": "المطور",
+    "copyright": "© 2025 جميع الحقوق محفوظة",
+    "built_with_love": "مصنوع بحب للمجتمع المسلم"
+  },
+  "contact": {
+    "contact": "اتصل",
+    "get_in_touch": "تواصل معنا",
+    "we_value_feedback": "نحن نقدر ملاحظاتك واقتراحاتك!",
+    "contact_information": "معلومات الاتصال",
+    "email": "البريد الإلكتروني",
+    "support": "الدعم",
+    "feedback": "ملاحظات",
+    "follow_us": "تابعنا",
+    "report_issues": "الإبلاغ عن مشاكل",
+    "found_bug": "وجدت خطأ أم لديك اقتراح ميزة؟",
+    "response_time": "وقت الاستجابة",
+    "response_text": "نرد عادةً خلال 24-48 ساعة خلال أيام العمل.",
+    "thank_you": "شكراً لاستخدامك الساعة الإسلامية الذكية!"
+  },
+  "actions": {
+    "enable_notifications": "تفعيل الإشعارات",
+    "refresh_data": "تحديث البيانات",
+    "github_issues": "مشاكل GitHub"
+  },
+  "greetings": {
+    "morning": "صباح الخير",
+    "afternoon": "طاب مساؤك",
+    "evening": "مساء الخير",
+    "night": "طاب مساؤك"
+  },
+  "islamic_terms": {
+    "assalamualaikum": "السلام عليكم",
+    "insha_allah": "إن شاء الله",
+    "alhamdulillah": "الحمد لله",
+    "subhanallah": "سبحان الله",
+    "allahu_akbar": "الله أكبر"
+  }
+}

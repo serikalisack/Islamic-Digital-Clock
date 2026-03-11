@@ -432,6 +432,37 @@ select:hover {
   }
 }
 
+body[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
+body[dir="rtl"] header {
+  direction: ltr;
+}
+
+body[dir="rtl"] .settings-grid {
+  direction: rtl;
+}
+
+body[dir="rtl"] #side-menu {
+  left: -350px;
+  right: auto;
+}
+
+body[dir="rtl"] #side-menu.active {
+  left: 0;
+  right: auto;
+}
+
+body[dir="rtl"] .modal-content {
+  direction: rtl;
+}
+
+body[dir="rtl"] .settings-tabs {
+  direction: ltr;
+}
+
 /* ==================== MODAL STYLES ==================== */
 .modal {
   position: fixed;

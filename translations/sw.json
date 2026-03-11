@@ -1,0 +1,140 @@
+{
+  "app": {
+    "title": "Saa ya Kiislamu ya Akili",
+    "loading": "Inapakia..."
+  },
+  "header": {
+    "title": "Saa ya Kiislamu ya Akili"
+  },
+  "menu": {
+    "menu": "Menyu",
+    "settings": "Mipangilio",
+    "about": "Kuhusu",
+    "contact": "Wasiliana",
+    "close": "✕"
+  },
+  "sections": {
+    "islamic_inspiration": "Mashindikano ya Kiislamu",
+    "ramadan_2025": "Ramadhani 2025",
+    "zakat_calculator": "Kikokotoo cha Zakat",
+    "prayer_times": "Nyakati za Swala",
+    "qibla_direction": "Mwelekeo wa Qibla",
+    "monthly_timetable": "Ratiba ya Kila Mwezi"
+  },
+  "prayers": {
+    "fajr": "Fajr",
+    "sunrise": "Alfajiri",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "jummah": "Jumapili",
+    "next_prayer": "Swala Ifuatayo",
+    "current_prayer": "Swala la Sasa"
+  },
+  "ramadan": {
+    "sehri_ends": "Sehri Inaisha",
+    "iftar_time": "Muda wa Iftar",
+    "ramadan_day": "Siku ya Ramadhani"
+  },
+  "zakat": {
+    "gold_grams": "Dhahabu (gramu)",
+    "silver_grams": "Fedha (gramu)",
+    "platinum_grams": "Platinamu (gramu)",
+    "palladium_grams": "Palladiumu (gramu)",
+    "diamond_carats": "Almasi (karati)",
+    "other_minerals": "Madini Mengine ($)",
+    "cash_savings": "Akiba ya Pesa ($)",
+    "investments": "Uwekezaji ($)",
+    "market_prices": "Bei za Soko (USD)",
+    "gold_per_gram": "Dhahabu kwa Gramu",
+    "silver_per_gram": "Fedha kwa Gramu",
+    "platinum_per_gram": "Platinamu kwa Gramu",
+    "palladium_per_gram": "Palladiumu kwa Gramu",
+    "diamond_per_carat": "Almasi kwa Karati",
+    "update_prices": "Sasisha Bei",
+    "display_currency": "Onyesha Sarafu",
+    "exchange_rate": "Kiwango cha Kubadilisha Sarafu",
+    "calculate_zakat": "Hesabu Zakat",
+    "total_wealth": "Jumla ya Mali",
+    "zakat_due": "Zakat Inayotakiwa (2.5%)",
+    "asset_breakdown": "Ugawaji wa Mali",
+    "currency_conversion": "Ubadilishanaji wa Sarafu"
+  },
+  "qibla": {
+    "qibla": "Qibla",
+    "compass_status": "Hali ya Busara",
+    "device_heading": "Mwelekeo wa Kifaa",
+    "qibla_angle": "Pembe ya Qibla"
+  },
+  "settings": {
+    "display_settings": "Mipangilio ya Onyesho",
+    "prayer_settings": "Mipangilio ya Swala",
+    "notification_settings": "Mipangilio ya Arifa",
+    "sound_settings": "Mipangilio ya Sauti",
+    "location_settings": "Mipangilio ya Mahali",
+    "24_hour_format": "Muundo wa Saa 24",
+    "gregorian_calendar": "Kalenda ya Gregori",
+    "hijri_calendar": "Kalenda ya Hijri",
+    "dark_mode": "Hali ya Giza",
+    "calculation_method": "Njia ya Kuhesabu",
+    "jurisprudence_madhab": "Sheria (Madhab)",
+    "adhan_notifications": "Arifa za Adhan",
+    "prayer_reminders": "Kukumbusha Swala",
+    "zakat_reminder": "Kukumbusha Zakat",
+    "ramadan_notifications": "Arifa za Ramadhani",
+    "friday_reminder": "Kukumbusha Jumapili",
+    "islamic_events": "Matukio ya Kiislamu",
+    "master_sound": "Sauti Kuu",
+    "adhan_sound": "Sauti ya Adhan",
+    "notification_sounds": "Sauti za Arifa",
+    "volume": "Sauti",
+    "city": "Jiji",
+    "select_city": "Chagua Jiji"
+  },
+  "about": {
+    "about": "Kuhusu",
+    "version": "Toleo",
+    "description": "Programu kamili ya Kiislamu inayojumuisha nyakati za swala, busara ya Qibla, kalenda ya Hijri, na mashindikano ya kila siku ya Kiislamu.",
+    "important_notice": "Arifa Muhimu",
+    "notice_text": "Ukurasa Bado Chini ya Matunzo na Maendeleo\n\nProgramu hii kwa sasa ni kwa madhumuni ya kielimu tu na sio 'FATWA' ambayo mtu anaweza kuitegemea kwa mambo ya dini. Watumiaji wanapaswa kutarajia matoleo na mabadiliko ya ghafla, kwa hivyo wanapaswa kawaida kubonyeza kitufe cha upya katika sehemu ya menyu mara nyingi kupata updates na uboreshaji wa hivi karibuni.",
+    "key_features": "Vipengele Vikuu",
+    "version_history": "Historia ya Toleo",
+    "developer": "Mstari",
+    "copyright": "© 2025 Haki zote zimehifadhiwa",
+    "built_with_love": "Imejengwa kwa upendo kwa jamii ya Kiislamu"
+  },
+  "contact": {
+    "contact": "Wasiliana",
+    "get_in_touch": "Wasiliana Nasi",
+    "we_value_feedback": "Tunathamini maoni yako na mapendekezo yako!",
+    "contact_information": "Maelezo ya Wasiliana",
+    "email": "Barua pepe",
+    "support": "Msaada",
+    "feedback": "Maoni",
+    "follow_us": "Tufuate",
+    "report_issues": "Ripoti Matatizo",
+    "found_bug": "Umeona kosa au una mapendekezo ya kipengele?",
+    "response_time": "Muda wa Kujibu",
+    "response_text": "Tujibu kwa kawaida ndani ya masaa 24-48 wakati wa siku za kazi.",
+    "thank_you": "Asante kwa kutumia Saa ya Kiislamu ya Akili!"
+  },
+  "actions": {
+    "enable_notifications": "Wezesha Arifa",
+    "refresh_data": "Onyesha Upya Data",
+    "github_issues": "Matatizo ya GitHub"
+  },
+  "greetings": {
+    "morning": "Habari za Asubuhi",
+    "afternoon": "Habari za Mchana",
+    "evening": "Habari za Jioni",
+    "night": "Habari za Usiku"
+  },
+  "islamic_terms": {
+    "assalamualaikum": "Assalamu Alaikum",
+    "insha_allah": "Insha Allah",
+    "alhamdulillah": "Alhamdulillah",
+    "subhanallah": "Subhanallah",
+    "allahu_akbar": "Allahu Akbar"
+  }
+}

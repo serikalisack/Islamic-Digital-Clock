@@ -1,0 +1,140 @@
+{
+  "app": {
+    "title": "Islamic Smart Clock",
+    "loading": "Loading..."
+  },
+  "header": {
+    "title": "Islamic Smart Clock"
+  },
+  "menu": {
+    "menu": "Menu",
+    "settings": "Settings",
+    "about": "About",
+    "contact": "Contact",
+    "close": "✕"
+  },
+  "sections": {
+    "islamic_inspiration": "Islamic Inspiration",
+    "ramadan_2025": "Ramadan 2025",
+    "zakat_calculator": "Zakat Calculator",
+    "prayer_times": "Prayer Times",
+    "qibla_direction": "Qibla Direction",
+    "monthly_timetable": "Monthly Timetable"
+  },
+  "prayers": {
+    "fajr": "Fajr",
+    "sunrise": "Sunrise",
+    "dhuhr": "Dhuhr",
+    "asr": "Asr",
+    "maghrib": "Maghrib",
+    "isha": "Isha",
+    "jummah": "Jummah",
+    "next_prayer": "Next Prayer",
+    "current_prayer": "Current Prayer"
+  },
+  "ramadan": {
+    "sehri_ends": "Sehri Ends",
+    "iftar_time": "Iftar Time",
+    "ramadan_day": "Ramadan Day"
+  },
+  "zakat": {
+    "gold_grams": "Gold (grams)",
+    "silver_grams": "Silver (grams)",
+    "platinum_grams": "Platinum (grams)",
+    "palladium_grams": "Palladium (grams)",
+    "diamond_carats": "Diamonds (carats)",
+    "other_minerals": "Other Minerals ($)",
+    "cash_savings": "Cash Savings ($)",
+    "investments": "Investments ($)",
+    "market_prices": "Market Prices (USD)",
+    "gold_per_gram": "Gold per gram",
+    "silver_per_gram": "Silver per gram",
+    "platinum_per_gram": "Platinum per gram",
+    "palladium_per_gram": "Palladium per gram",
+    "diamond_per_carat": "Diamond per carat",
+    "update_prices": "Update Prices",
+    "display_currency": "Display Currency",
+    "exchange_rate": "Exchange Rate",
+    "calculate_zakat": "Calculate Zakat",
+    "total_wealth": "Total Wealth",
+    "zakat_due": "Zakat Due (2.5%)",
+    "asset_breakdown": "Asset Breakdown",
+    "currency_conversion": "Currency Conversion"
+  },
+  "qibla": {
+    "qibla": "Qibla",
+    "compass_status": "Compass Status",
+    "device_heading": "Device Heading",
+    "qibla_angle": "Qibla Angle"
+  },
+  "settings": {
+    "display_settings": "Display Settings",
+    "prayer_settings": "Prayer Settings",
+    "notification_settings": "Notification Settings",
+    "sound_settings": "Sound Settings",
+    "location_settings": "Location Settings",
+    "24_hour_format": "24 Hour Format",
+    "gregorian_calendar": "Gregorian Calendar",
+    "hijri_calendar": "Hijri Calendar",
+    "dark_mode": "Dark Mode",
+    "calculation_method": "Calculation Method",
+    "jurisprudence_madhab": "Jurisprudence (Madhab)",
+    "adhan_notifications": "Adhan Notifications",
+    "prayer_reminders": "Prayer Reminders",
+    "zakat_reminder": "Zakat Reminder",
+    "ramadan_notifications": "Ramadan Notifications",
+    "friday_reminder": "Friday Reminder",
+    "islamic_events": "Islamic Events",
+    "master_sound": "Master Sound",
+    "adhan_sound": "Adhan Sound",
+    "notification_sounds": "Notification Sounds",
+    "volume": "Volume",
+    "city": "City",
+    "select_city": "Select City"
+  },
+  "about": {
+    "about": "About",
+    "version": "Version",
+    "description": "A comprehensive Islamic application featuring prayer times, Qibla compass, Hijri calendar, and daily Islamic inspiration.",
+    "important_notice": "Important Notice",
+    "notice_text": "Page Still Under Maintenance and Development\n\nThis application is currently for educational purposes only and not a 'FATWA' that someone can rely on for religious matters. Users should expect sudden releases and changes, so they should normalize hitting the refresh button on the menu section frequently to get the latest updates and improvements.",
+    "key_features": "Key Features",
+    "version_history": "Version History",
+    "developer": "Developer",
+    "copyright": "© 2025 All rights reserved",
+    "built_with_love": "Built with love for the Muslim community"
+  },
+  "contact": {
+    "contact": "Contact",
+    "get_in_touch": "Get in Touch",
+    "we_value_feedback": "We value your feedback and suggestions!",
+    "contact_information": "Contact Information",
+    "email": "Email",
+    "support": "Support",
+    "feedback": "Feedback",
+    "follow_us": "Follow Us",
+    "report_issues": "Report Issues",
+    "found_bug": "Found a bug or have a feature request?",
+    "response_time": "Response Time",
+    "response_text": "We typically respond within 24-48 hours during business days.",
+    "thank_you": "Thank you for using Islamic Smart Clock!"
+  },
+  "actions": {
+    "enable_notifications": "Enable Notifications",
+    "refresh_data": "Refresh Data",
+    "github_issues": "GitHub Issues"
+  },
+  "greetings": {
+    "morning": "Good Morning",
+    "afternoon": "Good Afternoon", 
+    "evening": "Good Evening",
+    "night": "Good Night"
+  },
+  "islamic_terms": {
+    "assalamualaikum": "Assalamu Alaikum",
+    "insha_allah": "Insha Allah",
+    "alhamdulillah": "Alhamdulillah",
+    "subhanallah": "Subhanallah",
+    "allahu_akbar": "Allahu Akbar"
+  }
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Language Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        select { padding: 10px; font-size: 16px; margin: 10px 0; }
+        .result { background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Language Feature Test</h1>
+    
+    <label for="language-select">Select Language:</label>
+    <select id="language-select">
+        <option value="en">English</option>
+        <option value="ar">العربية (Arabic)</option>
+        <option value="sw">Kiswahili (Swahili)</option>
+    </select>
+    
+    <div class="result">
+        <h3>Test Results:</h3>
+        <p>Page Title: <span id="page-title"></span></p>
+        <p>Header Title: <span id="header-title"></span></p>
+        <p>Menu Settings: <span id="menu-settings"></span></p>
+        <p>Prayer Times: <span id="prayer-times"></span></p>
+    </div>
+
+    <script>
+        class LanguageManager {
+            constructor() {
+                this.currentLanguage = localStorage.getItem('language') || 'en';
+                this.translations = {};
+                this.loadTranslations();
+            }
+
+            async loadTranslations() {
+                try {
+                    const response = await fetch(`translations/${this.currentLanguage}.json`);
+                    this.translations = await response.json();
+                    this.applyTranslations();
+                    this.setDirection();
+                    console.log('Translations loaded:', this.translations);
+                } catch (error) {
+                    console.error('Failed to load translations:', error);
+                    if (this.currentLanguage !== 'en') {
+                        this.currentLanguage = 'en';
+                        this.loadTranslations();
+                    }
+                }
+            }
+
+            async changeLanguage(lang) {
+                this.currentLanguage = lang;
+                localStorage.setItem('language', lang);
+                await this.loadTranslations();
+            }
+
+            setDirection() {
+                const isRTL = this.currentLanguage === 'ar';
+                document.documentElement.setAttribute('dir', isRTL ? 'rtl' : 'ltr');
+                document.documentElement.setAttribute('lang', this.currentLanguage);
+            }
+
+            t(key) {
+                const keys = key.split('.');
+                let value = this.translations;
+                
+                for (const k of keys) {
+                    value = value?.[k];
+                }
+                
+                return value || key;
+            }
+
+            applyTranslations() {
+                console.log('Applying translations for:', this.currentLanguage);
+                
+                // Update test elements
+                document.getElementById('page-title').textContent = this.t('app.title');
+                document.getElementById('header-title').textContent = this.t('header.title');
+                document.getElementById('menu-settings').textContent = this.t('menu.settings');
+                document.getElementById('prayer-times').textContent = this.t('sections.prayer_times');
+                
+                console.log('Translations applied successfully');
+            }
+        }
+
+        // Initialize
+        const languageManager = new LanguageManager();
+
+        // Language selector event
+        document.getElementById('language-select').addEventListener('change', async (e) => {
+            await languageManager.changeLanguage(e.target.value);
+        });
+
+        // Set current language in selector
+        document.getElementById('language-select').value = languageManager.currentLanguage;
+    </script>
+</body>
+</html>
