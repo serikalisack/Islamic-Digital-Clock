@@ -10,7 +10,7 @@
     "menu": "Menyu",
     "settings": "Mipangilio",
     "about": "Kuhusu",
-    "contact": "Wasiliana",
+    "contact": "Mawasiliano",
     "close": "✕"
   },
   "sections": {
@@ -28,12 +28,12 @@
     "asr": "Asr",
     "maghrib": "Maghrib",
     "isha": "Isha",
-    "jummah": "Jumamosi",
+    "jummah": "Ijumaa",
     "next_prayer": "Swala Ifuatayo",
     "current_prayer": "Swala ya Sasa"
   },
   "ramadan": {
-    "sehri_ends": "Sahuru Inaisha",
+    "sehri_ends": "Sahur/ Daku Inaisha",
     "iftar_time": "Wakati wa Iftar",
     "ramadan_day": "Siku ya Ramadan"
   },
@@ -68,9 +68,9 @@
     "qibla_angle": "Pembe ya Qibla"
   },
   "settings": {
-    "display_settings": "Mipangilio ya Onyesho",
+    "display_settings": "Mipangilio ya Muonekano",
     "prayer_settings": "Mipangilio ya Swala",
-    "notification_settings": "Mipangilio ya Arifa",
+    "notification_settings": "Mipangilio ya Arifa (Notifications)",
     "sound_settings": "Mipangilio ya Sauti",
     "location_settings": "Mipangilio ya Mahali",
     "24_hour_format": "Muundo wa Saa 24",
@@ -83,7 +83,7 @@
     "prayer_reminders": "Kukumbusha Swala",
     "zakat_reminder": "Kukumbusha Zakat",
     "ramadan_notifications": "Arifa za Ramadhani",
-    "friday_reminder": "Kukumbusha Jumapili",
+    "friday_reminder": "Ukumbusho wa Ijumaa",
     "islamic_events": "Matukio ya Kiislamu",
     "master_sound": "Sauti Kuu",
     "adhan_sound": "Sauti ya Adhan",
@@ -105,10 +105,10 @@
     "built_with_love": "Imejengwa kwa upendo kwa jamii ya Kiislamu"
   },
   "contact": {
-    "contact": "Wasiliana",
+    "contact": "Mawasiliano",
     "get_in_touch": "Wasiliana Nasi",
     "we_value_feedback": "Tunathamini maoni yako na mapendekezo yako!",
-    "contact_information": "Maelezo ya Wasiliana",
+    "contact_information": "Maelezo ya Mawasiliano",
     "email": "Barua pepe",
     "support": "Msaada",
     "feedback": "Maoni",

@@ -2,53 +2,17 @@
 
 // ==================== HIJRI DATE CALCULATION ====================
 function calculateHijriDate(date) {
-  // Modified Islamic calendar calculation
+  // Simple, reliable Hijri date calculation
   const gregorianDate = new Date(date);
   const year = gregorianDate.getFullYear();
-  const month = gregorianDate.getMonth() + 1; // JavaScript months are 0-11
+  const month = gregorianDate.getMonth() + 1;
   const day = gregorianDate.getDate();
   
-  // Islamic calendar calculation (Umm al-Qura)
-  let islamicYear, islamicMonth, islamicDay;
-  
-  if (year > 1582 || (year === 1582 && month > 10) || (year === 1582 && month === 10 && day > 15)) {
-    // After Islamic calendar reform
-    const z = (year - 1583) * 365.25 + 10 * Math.floor((year - 1583) / 33) + 2;
-    const d = Math.floor(z / 30);
-    const h = Math.floor((z - Math.floor(z / 30) * 30) / 11);
-    const g = Math.floor((h - 1) / 11) + 1;
-    
-    islamicYear = g + 1;
-    islamicMonth = h - 1;
-    islamicDay = d - 1;
-  } else {
-    // Before Islamic calendar reform
-    const z = (year - 1582) * 365.25 + 10 * Math.floor((year - 1582) / 33) + 1;
-    const d = Math.floor(z / 30);
-    const h = Math.floor((z - Math.floor(z / 30) * 30) / 11);
-    const g = Math.floor((h - 1) / 11) + 1;
-    
-    islamicYear = g;
-    islamicMonth = h - 1;
-    islamicDay = d - 1;
-  }
-  
-  // Adjust for day of week offset
-  if (day < 3) {
-    islamicDay += 2;
-  } else {
-    islamicDay += 1;
-  }
-  
-  if (islamicDay > 30) {
-    islamicDay -= 30;
-    islamicMonth += 1;
-  }
-  
-  if (islamicMonth > 12) {
-    islamicMonth -= 12;
-    islamicYear += 1;
-  }
+  // Simple conversion algorithm (approximate but reliable)
+  const h = (year - 622) * 354.367 + Math.floor((month - 1) * 29.53) + day;
+  const hijriYear = Math.floor(h / 354.367) + 1;
+  const hijriMonth = Math.floor((h % 354.367) / 29.53) + 1;
+  const hijriDay = Math.floor((h % 354.367) % 29.53) + 1;
   
   const monthNames = [
     "Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani",
@@ -56,7 +20,7 @@ function calculateHijriDate(date) {
     "Ramadan", "Shawwal", "Dhu al-Qidah", "Dhu al-Hijjah"
   ];
   
-  return `${islamicDay} ${monthNames[islamicMonth - 1]} ${islamicYear} AH`;
+  return `${hijriDay} ${monthNames[hijriMonth - 1]} ${hijriYear} AH`;
 }
 
 // Global constants and state
@@ -325,7 +289,6 @@ function init() {
     clock: document.getElementById("clock"),
     date: document.getElementById("date"),
     hijri: document.getElementById("hijri-date"),
-    greeting: document.getElementById("greeting"),
     prayerTimes: document.getElementById("prayer-times"),
     monthly: document.getElementById("monthly-table"),
     needle: document.getElementById("needle"),
@@ -395,8 +358,6 @@ function updateClock(el, state) {
   el.clock.textContent = state.is24
     ? `${hours}:${minutes}:${seconds}`
     : `${hours}:${minutes}:${seconds} ${ampm}`;
-
-  el.greeting.textContent = getGreeting(now.getHours());
 }
 
 /* ==================== DATE ==================== */

@@ -20,6 +20,9 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<!-- Islamic Date Library -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.js"></script>
 </head>
 
 <body>
@@ -274,10 +277,15 @@ Thank you for using As-saat | Al-asr!
 
 <main>
 
+<!-- Islamic Opening -->
+<div style="text-align: center; margin-bottom: 2rem; padding: 1rem; background: var(--bg-primary); border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+<p style="margin: 0; font-size: 1.2rem; color: var(--primary-color); font-weight: 600;" dir="rtl" lang="ar">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</p>
+<p style="margin: 0.5rem 0 0 0; font-size: 1rem; color: var(--text-secondary);" dir="rtl" lang="ar">السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ</p>
+</div>
+
 <h1 id="clock"></h1>
 <p id="date"></p>
 <p id="hijri-date"></p>
-<p id="greeting"></p>
 
 <section>
 <h3>Islamic Inspiration</h3>
