@@ -1,26 +1,96 @@
 "use strict";
 
-// ==================== HIJRI DATE CALCULATION ====================
-function calculateHijriDate(date) {
-  // Simple, reliable Hijri date calculation
-  const gregorianDate = new Date(date);
-  const year = gregorianDate.getFullYear();
-  const month = gregorianDate.getMonth() + 1;
-  const day = gregorianDate.getDate();
+// Cache for Hijri dates to avoid excessive API calls
+const hijriCache = new Map();
+
+async function calculateHijriDate(date) {
+  const dateKey = date.toDateString();
   
-  // Simple conversion algorithm (approximate but reliable)
-  const h = (year - 622) * 354.367 + Math.floor((month - 1) * 29.53) + day;
-  const hijriYear = Math.floor(h / 354.367) + 1;
-  const hijriMonth = Math.floor((h % 354.367) / 29.53) + 1;
-  const hijriDay = Math.floor((h % 354.367) % 29.53) + 1;
+  if (hijriCache.has(dateKey)) {
+    return hijriCache.get(dateKey);
+  }
+
+  try {
+    // For future dates, calculate from a reference point
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+    
+    if (date > today) {
+      // For future dates, get today's Hijri date and add the difference
+      const todayHijri = await getHijriFromAPI(todayStr);
+      const daysDiff = Math.floor((date - today) / (1000 * 60 * 60 * 24));
+      
+      // Approximate: add days to Hijri date (accounting for shorter Hijri year)
+      const hijriDaysPerYear = 354.367;
+      const additionalYears = Math.floor(daysDiff / hijriDaysPerYear);
+      const additionalDays = daysDiff % hijriDaysPerYear;
+      
+      let futureYear = todayHijri.year + additionalYears;
+      let futureMonth = todayHijri.month;
+      let futureDay = todayHijri.day + additionalDays;
+      
+      // Adjust for month overflow
+      const monthLengths = [30, 29, 30, 29, 30, 29, 30, 29, 30, 29, 30, 29]; // Approximate
+      while (futureDay > monthLengths[futureMonth - 1]) {
+        futureDay -= monthLengths[futureMonth - 1];
+        futureMonth++;
+        if (futureMonth > 12) {
+          futureMonth = 1;
+          futureYear++;
+        }
+      }
+      
+      // Use API month name if available, otherwise fallback to local names
+      const monthName = todayHijri.monthName || [
+        "Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani",
+        "Jumada al-Ula", "Jumada al-Thani", "Rajab", "Shaban",
+        "Ramadan", "Shawwal", "Dhu al-Qidah", "Dhu al-Hijjah"
+      ][futureMonth - 1];
+      
+      const hijriDateStr = `${futureDay} ${monthName} ${futureYear} AH`;
+      hijriCache.set(dateKey, hijriDateStr);
+      return hijriDateStr;
+    } else {
+      // For past/current dates, use API
+      const hijriData = await getHijriFromAPI(date.toISOString().split('T')[0]);
+      
+      // Use API month name if available, otherwise fallback to local names
+      const monthName = hijriData.monthName || [
+        "Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani",
+        "Jumada al-Ula", "Jumada al-Thani", "Rajab", "Shaban",
+        "Ramadan", "Shawwal", "Dhu al-Qidah", "Dhu al-Hijjah"
+      ][hijriData.month - 1];
+      
+      const hijriDateStr = `${hijriData.day} ${monthName} ${hijriData.year} AH`;
+      hijriCache.set(dateKey, hijriDateStr);
+      return hijriDateStr;
+    }
+  } catch (error) {
+    console.error('Error calculating Hijri date:', error);
+    return fallbackHijriCalculation(date);
+  }
+}
+
+async function getHijriFromAPI(dateStr) {
+  // Convert YYYY-MM-DD to DD-MM-YYYY format for Aladhan API
+  const [year, month, day] = dateStr.split('-');
+  const apiDate = `${day}-${month}-${year}`;
   
-  const monthNames = [
-    "Muharram", "Safar", "Rabi al-Awwal", "Rabi al-Thani",
-    "Jumada al-Ula", "Jumada al-Thani", "Rajab", "Shaban",
-    "Ramadan", "Shawwal", "Dhu al-Qidah", "Dhu al-Hijjah"
-  ];
+  const response = await fetch(`https://api.aladhan.com/v1/gToH?date=${apiDate}`);
+  const data = await response.json();
   
-  return `${hijriDay} ${monthNames[hijriMonth - 1]} ${hijriYear} AH`;
+  console.log('API Response for date:', apiDate, data);
+  
+  if (data.code !== 200) {
+    throw new Error('API returned error');
+  }
+  
+  return {
+    day: parseInt(data.data.hijri.day),
+    month: parseInt(data.data.hijri.month.number),
+    year: parseInt(data.data.hijri.year),
+    monthName: data.data.hijri.month.en
+  };
 }
 
 // Global constants and state
@@ -303,6 +373,7 @@ function init() {
     qiblaAngle: document.getElementById("qibla-angle"),
     verseOfDay: document.getElementById("verse-of-day"),
     hadithOfDay: document.getElementById("hadith-of-day"),
+    eidDates: document.getElementById("eid-dates-content"),
     calculationMethod: document.getElementById("calculation-method"),
     madhab: document.getElementById("madhab"),
     nextPrayer: document.getElementById("next-prayer"),
@@ -345,7 +416,16 @@ function init() {
 /* ==================== CLOCK ==================== */
 function startClock(el, state) {
   updateClock(el, state);
-  setInterval(() => updateClock(el, state), 1000);
+  let lastDate = new Date().toDateString();
+  
+  setInterval(() => {
+    updateClock(el, state);
+    const currentDate = new Date().toDateString();
+    if (currentDate !== lastDate) {
+      updateDate(el);
+      lastDate = currentDate;
+    }
+  }, 1000);
 }
 
 function updateClock(el, state) {
@@ -361,7 +441,7 @@ function updateClock(el, state) {
 }
 
 /* ==================== DATE ==================== */
-function updateDate(el) {
+async function updateDate(el) {
   const now = new Date();
 
   el.date.textContent = new Intl.DateTimeFormat("en-US", {
@@ -372,26 +452,34 @@ function updateDate(el) {
   }).format(now);
 
   // Calculate Hijri date properly
-  const hijriDate = calculateHijriDate(now);
+  const hijriDate = await calculateHijriDate(now);
   el.hijri.textContent = hijriDate;
 }
 
 /* ==================== QIBLA ==================== */
-function calculateQibla(lat, lon) {
-  const toRad = d => d * Math.PI / 180;
-  const toDeg = r => r * 180 / Math.PI;
+async function calculateQibla(lat, lon) {
+  try {
+    const response = await fetch(`https://api.aladhan.com/v1/qibla/${lat}/${lon}`);
+    const data = await response.json();
+    return data.data.direction;
+  } catch (error) {
+    console.error('Error fetching Qibla from API, falling back to local calculation:', error);
+    // Fallback to local calculation
+    const toRad = d => d * Math.PI / 180;
+    const toDeg = r => r * 180 / Math.PI;
 
-  const φ1 = toRad(lat);
-  const φ2 = toRad(KAABA_LAT);
-  const Δλ = toRad(KAABA_LON - lon);
+    const φ1 = toRad(lat);
+    const φ2 = toRad(KAABA_LAT);
+    const Δλ = toRad(KAABA_LON - lon);
 
-  const y = Math.sin(Δλ);
-  const x = Math.cos(φ1) * Math.tan(φ2) - Math.sin(φ1) * Math.cos(Δλ);
+    const y = Math.sin(Δλ);
+    const x = Math.cos(φ1) * Math.tan(φ2) - Math.sin(φ1) * Math.cos(Δλ);
 
-  let θ = Math.atan2(y, x);
-  θ = (toDeg(θ) + 360) % 360;
+    let θ = Math.atan2(y, x);
+    θ = (toDeg(θ) + 360) % 360;
 
-  return θ;
+    return θ;
+  }
 }
 
 function initQiblaCompass(qiblaBearing, el) {
@@ -990,7 +1078,7 @@ function getGreeting(h) {
 }
 
 /* ==================== ISLAMIC CONTENT ==================== */
-function loadIslamicContent(el) {
+async function loadIslamicContent(el) {
   const verses = [
     { text: "In the name of Allah, the Entirely Merciful, the Especially Merciful.", reference: "Quran 1:1" },
     { text: "Allah does not burden a soul beyond that it can bear.", reference: "Quran 2:286" },
@@ -1024,8 +1112,13 @@ function loadIslamicContent(el) {
   if (el.hadithOfDay) {
     el.hadithOfDay.innerHTML = `${hadiths[hadithIndex].text}<br><small style="color: var(--text-secondary);">${hadiths[hadithIndex].reference}</small>`;
   }
+
+  // Load Eid dates
+  loadEidDates(el);
 }
 
+/* ==================== EID DATES ==================== */
+// Eid functions moved to islamic-calendar.js for better organization and sensitivity handling
 /* ==================== MENU & MODAL FUNCTIONS ==================== */
 function toggleMenu() {
   const menu = document.getElementById('side-menu');

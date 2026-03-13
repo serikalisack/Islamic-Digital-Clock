@@ -20,9 +20,10 @@
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
-<!-- Islamic Date Library -->
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment-hijri@2.1.2/moment-hijri.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hijri-date@1.0.4/lib/hijri-date.min.js"></script>
+<script src="islamic-calendar.js"></script>
 </head>
 
 <body>
@@ -292,6 +293,10 @@ Thank you for using As-saat | Al-asr!
 <div id="islamic-content">
 <p id="verse-of-day" style="font-style: italic; margin: 1rem 0; line-height: 1.8;"></p>
 <p id="hadith-of-day" style="font-style: italic; margin: 1rem 0; line-height: 1.8; color: var(--text-secondary);"></p>
+<div id="eid-dates" style="margin: 1rem 0; padding: 1rem; background: var(--bg-secondary); border-radius: var(--radius-md);">
+<h4 style="margin: 0 0 0.5rem 0; color: var(--primary-color);">Upcoming Eid Dates</h4>
+<div id="eid-dates-content"></div>
+</div>
 </div>
 </section>
 
